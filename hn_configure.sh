@@ -20,7 +20,7 @@ IP=`hostname -i`
 localip=`echo $IP | cut --delimiter='.' -f -3`
 myhost=`hostname`
 nmap -p 80 $localip.0/28 | grep $localip | awk '{ print $5 }'> /home/$MYUSER/hostfile
-sed '/10.0.0.1/d' hostfile -i
+sed '/10.0.0.1/d' /home/$MYUSER/hostfile -i
 
 cat << EOF >> /etc/security/limits.conf
 *               hard    memlock         unlimited
@@ -33,8 +33,8 @@ EOF
 cd ~
 git clone https://github.com/oci-hpc/oci-hpc-ref-arch
 source oci-hpc-ref-arch/disable_ht.sh 0
-#source oci_hpc/install_ganglia.sh $MYHOST OCI 8649
-source oci_hpc/nfs_setup.sh $MYHOST
+#source oci-hpc-ref-arch/install_ganglia.sh $MYHOST OCI 8649
+source oci-hpc-ref-arch/nfs_setup.sh $MYHOST
 chown -r $MYUSER:$MYUSER /mnt/share/scratch
 
 #USER CONFIGURATION
@@ -50,7 +50,7 @@ EOF
 
 chown $MYUSER:$MYUSER /home/$MYUSER/.bashrc
 
-ssh-keygen -f /home/$MYUSER/.ssh/id_rsa -t rsa -N ''
+#ssh-keygen -f /home/$MYUSER/.ssh/id_rsa -t rsa -N ''
 cat << EOF > /home/$MYUSER/.ssh/config
 Host *
     StrictHostKeyChecking no
