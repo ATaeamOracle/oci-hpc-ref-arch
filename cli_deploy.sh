@@ -22,13 +22,13 @@ S=`oci network subnet create --region $AD -c $C --vcn-id $V --display-name "hpc_
 #CREATE HEADNODE
 echo
 echo 'Creating Headnode'
-oci compute instance launch --availability-domain "$AD" -c $C --shape "BM.DenseIO2.52" --display-name "hpc_master" --image-id $OS --subnet-id $S --private-ip 10.0.0.2 --wait-for-state RUNNING --user-data-file hn_configure.sh --ssh-authorized-keys-file ~/.ssh/id_rsa.pub
+oci compute instance launch --region $AD -c $C --shape "BM.DenseIO2.52" --display-name "hpc_master" --image-id $OS --subnet-id $S --private-ip 10.0.0.2 --wait-for-state RUNNING --user-data-file hn_configure.sh --ssh-authorized-keys-file ~/.ssh/id_rsa.pub
 #for iid in `oci compute instance list -c $C | jq -r '.data[] | select(."lifecycle-state"=="RUNNING") | .id'`; do newip=`oci compute instance list-vnics --instance-id $iid | jq -r '.data[0] | ."display-name"+": "+."private-ip"+", "+."public-ip"'`; echo $iid, $newip; done
 
 #CREATE COMPUTE
 echo
 echo 'Creating Compute Nodes'
-for i in `seq 1 $CNODES`; do oci compute instance launch --availability-domain "$AD" -c $C --shape "BM.Standard2.52" --display-name "hpc_cn$i-$PRE" --image-id $OS --subnet-id $S --user-data-file hn_configure.sh --ssh-authorized-keys-file ~/.ssh/id_rsa.pub; done 
+for i in `seq 1 $CNODES`; do oci compute instance launch --region $AD -c $C --shape "BM.Standard2.52" --display-name "hpc_cn$i-$PRE" --image-id $OS --subnet-id $S --user-data-file hn_configure.sh --ssh-authorized-keys-file ~/.ssh/id_rsa.pub; done 
 
 #LIST IP's
 echo
