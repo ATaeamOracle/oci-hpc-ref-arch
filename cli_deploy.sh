@@ -3,7 +3,7 @@
 export CNODES=2
 export C=$1
 export PRE=`uuidgen | cut -c-5`
-export AD=kWVD:PHX-AD-1
+export AD=kWVD:IAD-AD-1
 export OS=ocid1.image.oc1.phx.aaaaaaaav4gjc4l232wx5g5drypbuiu375lemgdgnc7zg2wrdfmmtbtyrc5q #OracleLinux
 #wget https://raw.githubusercontent.com/tanewill/oci_hpc/master/bm_configure.sh
 
