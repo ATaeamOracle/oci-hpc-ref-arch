@@ -36,7 +36,7 @@ for i in `seq 1 $CNODES`; do oci compute instance launch --region $region --avai
 echo
 echo 'Waiting three minutes for IP addresses'
 sleep 180
-for iid in `oci compute instance list -c $C | jq -r '.data[] | select(."lifecycle-state"=="RUNNING") | .id'`; do newip=`oci compute instance list-vnics --instance-id $iid | jq -r '.data[0] | ."display-name"+": "+."private-ip"+", "+."public-ip"'`; echo $iid, $newip; done
+for iid in `oci compute instance list --region $region -c $C | jq -r '.data[] | select(."lifecycle-state"=="RUNNING") | .id'`; do newip=`oci compute instance list-vnics --region $region --instance-id $iid | jq -r '.data[0] | ."display-name"+": "+."private-ip"+", "+."public-ip"'`; echo $iid, $newip; done
 
 
 #DELETE INSTANCES
