@@ -3,7 +3,7 @@
 export CNODES=2
 export C=$1
 export PRE=`uuidgen | cut -c-5`
-export AD=kWVD:US-ASHBURN-AD-1
+export AD=us-ashburn-1
 export OS=ocid1.image.oc1.phx.aaaaaaaav4gjc4l232wx5g5drypbuiu375lemgdgnc7zg2wrdfmmtbtyrc5q #OracleLinux
 #wget https://raw.githubusercontent.com/tanewill/oci_hpc/master/bm_configure.sh
 
@@ -13,11 +13,11 @@ export OS=ocid1.image.oc1.phx.aaaaaaaav4gjc4l232wx5g5drypbuiu375lemgdgnc7zg2wrdf
 #CREATE NETWORK
 echo
 echo 'Creating Network'
-V=`oci network vcn create --cidr-block 10.0.0.0/24 --compartment-id $C --display-name "hpc_vcn-$PRE" --wait-for-state AVAILABLE | jq -r '.data.id'`
-NG=`oci network internet-gateway create -c $C --vcn-id $V --is-enabled TRUE --display-name "hpc_ng-$PRE" --wait-for-state AVAILABLE | jq -r '.data.id'`
-RT=`oci network route-table create -c $C --vcn-id $V --display-name "hpc_rt-$PRE" --wait-for-state AVAILABLE --route-rules '[{"cidrBlock":"0.0.0.0/0","networkEntityId":"'$NG'"}]' | jq -r '.data.id'`
-SL=`oci network security-list create -c $C --vcn-id $V --display-name "hpc_sl-$PRE" --wait-for-state AVAILABLE --egress-security-rules '[{"destination":  "0.0.0.0/0",  "protocol": "all", "isStateless":  null}]' --ingress-security-rules '[{"source":  "0.0.0.0/0",  "protocol": "all", "isStateless":  null}]' | jq -r '.data.id'`
-S=`oci network subnet create -c $C --vcn-id $V --availability-domain "$AD" --display-name "hpc_subnet_$AD-$PRE" --cidr-block "10.0.0.0/26" --route-table-id $RT --security-list-ids '["'$SL'"]' --wait-for-state AVAILABLE | jq -r '.data.id'`
+V=`oci network vcn create --region $AD --cidr-block 10.0.0.0/24 --compartment-id $C --display-name "hpc_vcn-$PRE" --wait-for-state AVAILABLE | jq -r '.data.id'`
+NG=`oci network internet-gateway create --region $AD -c $C --vcn-id $V --is-enabled TRUE --display-name "hpc_ng-$PRE" --wait-for-state AVAILABLE | jq -r '.data.id'`
+RT=`oci network route-table create --region $AD -c $C --vcn-id $V --display-name "hpc_rt-$PRE" --wait-for-state AVAILABLE --route-rules '[{"cidrBlock":"0.0.0.0/0","networkEntityId":"'$NG'"}]' | jq -r '.data.id'`
+SL=`oci network security-list create --region $AD -c $C --vcn-id $V --display-name "hpc_sl-$PRE" --wait-for-state AVAILABLE --egress-security-rules '[{"destination":  "0.0.0.0/0",  "protocol": "all", "isStateless":  null}]' --ingress-security-rules '[{"source":  "0.0.0.0/0",  "protocol": "all", "isStateless":  null}]' | jq -r '.data.id'`
+S=`oci network subnet create --region $AD -c $C --vcn-id $V --display-name "hpc_subnet_$AD-$PRE" --cidr-block "10.0.0.0/26" --route-table-id $RT --security-list-ids '["'$SL'"]' --wait-for-state AVAILABLE | jq -r '.data.id'`
 
 #CREATE HEADNODE
 echo
