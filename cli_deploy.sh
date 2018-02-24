@@ -6,6 +6,7 @@ export PRE=`uuidgen | cut -c-5`
 export region=us-ashburn-1
 export AD=kWVD:US-ASHBURN-AD-1
 export OS=ocid1.image.oc1.phx.aaaaaaaav4gjc4l232wx5g5drypbuiu375lemgdgnc7zg2wrdfmmtbtyrc5q #OracleLinux
+export OS=ocid1.image.oc1.iad.aaaaaaaautkmgjebjmwym5i6lvlpqfzlzagvg5szedggdrbp6rcjcso3e4kq
 #wget https://raw.githubusercontent.com/tanewill/oci_hpc/master/bm_configure.sh
 
 #LIST OS OCID's
