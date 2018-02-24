@@ -31,8 +31,8 @@ EOF
 
 #DISABLE HYPERTHREADING, INSTALL GANGLIA, INSTALL NFS
 cd ~
-git clone https://github.com/tanewill/oci_hpc
-source oci_hpc/disable_ht.sh 0
+git clone https://github.com/oci-hpc/oci-hpc-ref-arch
+source oci-hpc-ref-arch/disable_ht.sh 0
 #source oci_hpc/install_ganglia.sh $MYHOST OCI 8649
 source oci_hpc/nfs_setup.sh $MYHOST
 chown -r $MYUSER:$MYUSER /mnt/share/scratch
