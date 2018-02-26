@@ -30,16 +30,17 @@ cat << EOF >> /etc/security/limits.conf
 EOF
 
 #DISABLE HYPERTHREADING, INSTALL GANGLIA, INSTALL NFS
+chown $MYUSER:$MYUSER /mnt/share/scratch
 cd ~
 git clone https://github.com/oci-hpc/oci-hpc-ref-arch
 source oci-hpc-ref-arch/disable_ht.sh 0
 #source oci-hpc-ref-arch/install_ganglia.sh $MYHOST OCI 8649
 source oci-hpc-ref-arch/nfs_setup.sh $MYHOST
-chown -r $MYUSER:$MYUSER /mnt/share/scratch
+
 
 #USER CONFIGURATION
 mkdir -p /home/$MYUSER/bin
-chown $MYUSER:$MYUSER /home/$MYUSER/bin
+
 
 cat << EOF >> /home/$MYUSER/.bashrc
 export WCOLL=/home/$MYUSER/hostfile
@@ -48,7 +49,7 @@ export I_MPI_ROOT=/opt/intel/compilers_and_libraries_2018.1.163/linux/mpi
 export MPI_ROOT=$I_MPI_ROOT
 EOF
 
-chown $MYUSER:$MYUSER /home/$MYUSER/.bashrc
+
 
 #ssh-keygen -f /home/$MYUSER/.ssh/id_rsa -t rsa -N ''
 cat << EOF > /home/$MYUSER/.ssh/config
@@ -60,7 +61,6 @@ Host *
 EOF
 cat /home/$MYUSER/.ssh/id_rsa.pub >> /home/$MYUSER/.ssh/authorized_keys
 chmod 644 /home/$MYUSER/.ssh/config
-chown $MYUSER:$MYUSER /home/$MYUSER/.ssh/*
 
 # Don't require password for HPC user sudo
 echo "$MYUSER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
@@ -77,6 +77,9 @@ source /opt/intel/impi/${impi_version}/bin64/mpivars.sh
 ln -s /opt/intel/impi/${impi_version}/intel64/bin/ /opt/intel/impi/${impi_version}/bin
 ln -s /opt/intel/impi/${impi_version}/lib64/ /opt/intel/impi/${impi_version}/lib
 
+chown $MYUSER:$MYUSER /home/$MYUSER/.ssh/*
+chown $MYUSER:$MYUSER /home/$MYUSER/bin
+chown $MYUSER:$MYUSER /home/$MYUSER/.bashrc
 
 :'
 wget https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh

@@ -7,8 +7,7 @@ install_nfsserver()
   #Setup the NFS server
   localip=`echo $IP | cut --delimiter='.' -f -3`
   mkdir -p /mnt/share/scratch
-  echo "/share/nfs 10.0.0.0/20(rw,sync,no_root_squash,no_all_squash)" | tee -a /etc/exports
-  echo "/share/nfs $localip.0/20(rw,sync,no_root_squash,no_all_squash)" | tee -a /etc/exports
+  echo "/mnt/share/scratch 10.0.0.0/20(rw,sync,no_root_squash,no_all_squash)" | tee -a /etc/exports
   systemctl enable rpcbind
   systemctl enable nfs-server
   systemctl enable nfs-lock
@@ -35,7 +34,7 @@ install_nfsclient()
   systemctl start nfs-idmap
   localip=`hostname -i | cut --delimiter='.' -f -3`
   echo "$IPPRE:/mnt/share/scratch     /mnt/share/scratch      nfs defaults,mountproto=tcp,sec=sys 0 0" | tee -a /etc/fstab
-  echo "$IPPRE:/home     /home      nfs defaults,mountproto=tcp,sec=sys 0 0" | tee -a /etc/fstab
+  #echo "$IPPRE:/home     /home      nfs defaults,mountproto=tcp,sec=sys 0 0" | tee -a /etc/fstab
   mount -a
   df | grep $IPPRE
 }
