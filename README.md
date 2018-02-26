@@ -1,4 +1,21 @@
 # Oracle Cloud Infrastructure 
+## Quickstart ##
+1)  Install Oracle Cloud Infrastructure (OCI) Command Line Interface (CLI)
+2) Clone this repository
+```bash
+git clone https://github.com/oci-hpc/oci-hpc-ref-arch
+```
+3) Set environment variable C to your compartment tenancy
+```bash
+export C=ocid1.tenancy.oc1..aaaaaaaxxxxxxxxxxxxxxxxxxxx
+```
+4) Ensure that you have regional limits
+5) Set region
+6) Deploy
+```bash
+./cli_deploy.sh $C
+```
+
 ## [DRAFT] HPC Configuration Scripts ##
 These scripts represent the initial progress of the Oracle Cloud Infrastructure HPC team in developing tools that will support the product group and the field in testing, benchmarking, and deploying HPC resources on the Oracle Cloud Infrastructure.
 

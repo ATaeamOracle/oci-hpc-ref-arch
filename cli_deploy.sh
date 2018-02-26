@@ -35,7 +35,7 @@ computeData=$(for i in `seq 1 $CNODES`; do oci compute instance launch --region 
 
 #LIST IP's
 echo
-echo 'Created Head Node and Compute Nodes'
+echo 'Created Headnode and Compute Nodes'
 echo 'Waiting five minutes for IP addresses'
 sleep 300
 
