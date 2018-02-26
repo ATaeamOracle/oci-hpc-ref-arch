@@ -29,7 +29,7 @@ masterID=`oci compute instance launch --region $region --availability-domain "$A
 #CREATE COMPUTE
 echo
 echo 'Creating Compute Nodes'
-computeData=$(for i in `seq 1 $CNODES`; do oci compute instance launch --region $region --availability-domain "$AD" -c $C --shape "BM.Standard2.52" --display-name "hpc_cn$i-$PRE" --image-id $OS --subnet-id $S --assign-public-ip false --user-data-file hn_configure.sh --ssh-authorized-keys-file ~/.ssh/id_rsa.pub; done)
+computeData=$(for i in `seq 1 $CNODES`; do oci compute instance launch --region $region --availability-domain "$AD" -c $C --shape "BM.Standard2.52" --display-name "hpc_cn$i-$PRE" --image-id $OS --subnet-id $S --assign-public-ip false  --skip-source-dest-check true --user-data-file hn_configure.sh --ssh-authorized-keys-file ~/.ssh/id_rsa.pub; done)
 
 #LIST IP's
 echo
@@ -56,7 +56,9 @@ export SL=$SL
 export S=$S
 
 #DELETE INSTANCES
+oci compute instance terminate --region $region --instance-id hpc_master-$PRE --force
 for instanceid in $(oci compute instance list --region $region -c $C | jq -r '.data[] | select(."display-name" | contains ("$PRE")) | .id'); do oci compute instance terminate --region $region --instance-id $instanceid --force; done
+sleep 30
 oci network subnet delete --region $region --subnet-id $S --force
 oci network route-table delete --region $region --rt-id $RT --force
 oci network security-list delete --region $region --security-list-id $SL --force
