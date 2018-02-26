@@ -56,9 +56,11 @@ export SL=$SL
 export S=$S
 
 #DELETE INSTANCES
-#for iid in `oci compute instance list -c $C | jq -r '.data[] | select(."lifecycle-state"=="RUNNING") | .id'`; do oci compute instance terminate --instance-id $iid --force; done
-#oci network subnet delete --subnet-id $S --force
-#oci network route-table delete --rt-id $RT --force
-#oci network security-list delete --security-list-id $SL --force
-#oci network vcn delete --vcn-id $V --force
+for iid in `oci compute instance list --region us-ashburn-1 -c $C | jq -r '.data[] | select(."display-name" | contains("$PRE")) | .id'`; do oci compute instance terminate --instance-id $iid --force; done
+oci network subnet delete --region $region --subnet-id $S --force
+oci network route-table delete --region $region --rt-id $RT --force
+oci network security-list delete --region $region --security-list-id $SL --force
+oci network vcn delete --region $region --vcn-id $V --force
 EOF
+
+chmod +x removeCluster.sh
