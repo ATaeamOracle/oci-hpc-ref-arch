@@ -49,9 +49,6 @@ export I_MPI_ROOT=/opt/intel/compilers_and_libraries_2018.1.163/linux/mpi
 export MPI_ROOT=$I_MPI_ROOT
 EOF
 
-
-
-#ssh-keygen -f /home/$MYUSER/.ssh/id_rsa -t rsa -N ''
 cat << EOF > /home/$MYUSER/.ssh/config
 Host *
     StrictHostKeyChecking no
@@ -80,6 +77,10 @@ ln -s /opt/intel/impi/${impi_version}/lib64/ /opt/intel/impi/${impi_version}/lib
 chown $MYUSER:$MYUSER /home/$MYUSER/.ssh/*
 chown $MYUSER:$MYUSER /home/$MYUSER/bin
 chown $MYUSER:$MYUSER /home/$MYUSER/.bashrc
+
+runuser -l $MYUSER -c "pdsh -w ^/home/$MYUSER/hostfile hostname > /home/$MYUSER/hostnames"
+cat /home/$MYUSER/hostnames >> /etc/hosts
+
 
 :'
 wget https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh

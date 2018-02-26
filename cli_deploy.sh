@@ -29,11 +29,11 @@ masterID=`oci compute instance launch --region $region --availability-domain "$A
 #CREATE COMPUTE
 echo
 echo 'Creating Compute Nodes'
-for i in `seq 1 $CNODES`; do oci compute instance launch --region $region --availability-domain "$AD" -c $C --shape "BM.Standard2.52" --display-name "hpc_cn$i-$PRE" --image-id $OS --subnet-id $S --user-data-file hn_configure.sh --ssh-authorized-keys-file ~/.ssh/id_rsa.pub; done 
+for i in `seq 1 $CNODES`; do oci compute instance launch --region $region --availability-domain "$AD" -c $C --shape "BM.Standard2.52" --display-name "hpc_cn$i-$PRE" --image-id $OS --subnet-id $S --assign-public-ip false --user-data-file hn_configure.sh --ssh-authorized-keys-file ~/.ssh/id_rsa.pub; done 
 
 #LIST IP's
 echo
-echo 'Waiting three minutes for IP addresses'
+echo 'Waiting five minutes for IP addresses'
 sleep 300
 
 masterIP=$(oci compute instance list-vnics --region $region --instance-id $masterID | jq -r '.data[]."public-ip"')
@@ -42,10 +42,23 @@ for iid in `oci compute instance list --region $region -c $C | jq -r '.data[] | 
 
 scp -o StrictHostKeyChecking=no ~/.ssh/id_rsa opc@$masterIP:~/.ssh/
 
+#CREATE REMOVE SCRIPT
+cat << EOF >> removeCluster.sh
+#!/bin/bash
+export C=$1
+export PRE=$PRE
+export region=$region
+export AD=$AD
+export V=$V
+export NG=$NG
+export RT=$RT
+export SL=$SL
+export S=$S
+
 #DELETE INSTANCES
 #for iid in `oci compute instance list -c $C | jq -r '.data[] | select(."lifecycle-state"=="RUNNING") | .id'`; do oci compute instance terminate --instance-id $iid --force; done
 #oci network subnet delete --subnet-id $S --force
 #oci network route-table delete --rt-id $RT --force
 #oci network security-list delete --security-list-id $SL --force
 #oci network vcn delete --vcn-id $V --force
-
+EOF

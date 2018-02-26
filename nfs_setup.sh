@@ -17,12 +17,12 @@ install_nfsserver()
   systemctl start nfs-lock
   systemctl start nfs-idmap
   systemctl restart nfs-server
-  
+  chmod 777 /mnt/share/scratch
 }
 
 install_nfsclient()
 {
-  sleep 180
+  sleep 120
   mkdir -p /mnt/share/scratch
   systemctl enable rpcbind
   systemctl enable nfs-server
@@ -36,7 +36,7 @@ install_nfsclient()
   echo "$IPPRE:/mnt/share/scratch     /mnt/share/scratch      nfs defaults,mountproto=tcp,sec=sys 0 0" | tee -a /etc/fstab
   #echo "$IPPRE:/home     /home      nfs defaults,mountproto=tcp,sec=sys 0 0" | tee -a /etc/fstab
   mount -a
-  df | grep $IPPRE
+  chmod 777 /mnt/share/scratch
 }
 
 if [ $IP = $IPPRE ];
