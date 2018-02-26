@@ -24,12 +24,12 @@ S=`oci network subnet create -c $C --vcn-id $V --region $region --availability-d
 #CREATE HEADNODE
 echo
 echo 'Creating Headnode'
-masterID=`oci compute instance launch --region $region --availability-domain "$AD" -c $C --shape "BM.DenseIO2.52" --display-name "hpc_master" --image-id $OS --subnet-id $S --private-ip 10.0.0.2 --wait-for-state RUNNING --user-data-file hn_configure.sh --ssh-authorized-keys-file ~/.ssh/id_rsa.pub | jq -r '.data.id'`
+masterID=`oci compute instance launch --region $region --availability-domain "$AD" -c $C --shape "BM.DenseIO2.52" --display-name "hpc_master-$PRE" --image-id $OS --subnet-id $S --private-ip 10.0.0.2 --wait-for-state RUNNING --user-data-file hn_configure.sh --ssh-authorized-keys-file ~/.ssh/id_rsa.pub | jq -r '.data.id'`
 
 #CREATE COMPUTE
 echo
 echo 'Creating Compute Nodes'
-for i in `seq 1 $CNODES`; do oci compute instance launch --region $region --availability-domain "$AD" -c $C --shape "BM.Standard2.52" --display-name "hpc_cn$i-$PRE" --image-id $OS --subnet-id $S --assign-public-ip false --user-data-file hn_configure.sh --ssh-authorized-keys-file ~/.ssh/id_rsa.pub; done 
+computeData=$(for i in `seq 1 $CNODES`; do oci compute instance launch --region $region --availability-domain "$AD" -c $C --shape "BM.Standard2.52" --display-name "hpc_cn$i-$PRE" --image-id $OS --subnet-id $S --assign-public-ip false --user-data-file hn_configure.sh --ssh-authorized-keys-file ~/.ssh/id_rsa.pub; done)
 
 #LIST IP's
 echo
@@ -43,7 +43,7 @@ for iid in `oci compute instance list --region $region -c $C | jq -r '.data[] | 
 scp -o StrictHostKeyChecking=no ~/.ssh/id_rsa opc@$masterIP:~/.ssh/
 
 #CREATE REMOVE SCRIPT
-cat << EOF >> removeCluster.sh
+cat << EOF >> removeCluster_$PRE.sh
 #!/bin/bash
 export C=$1
 export PRE=$PRE
@@ -56,7 +56,7 @@ export SL=$SL
 export S=$S
 
 #DELETE INSTANCES
-for iid in `oci compute instance list --region us-ashburn-1 -c $C | jq -r '.data[] | select(."display-name" | contains("$PRE")) | .id'`; do oci compute instance terminate --instance-id $iid --force; done
+for instanceid in $(oci compute instance list --region $region -c $C | jq -r '.data[] | select(."display-name" | contains ("$PRE")) | .id'); do oci compute instance terminate --region $region --instance-id $instanceid --force; done
 oci network subnet delete --region $region --subnet-id $S --force
 oci network route-table delete --region $region --rt-id $RT --force
 oci network security-list delete --region $region --security-list-id $SL --force
