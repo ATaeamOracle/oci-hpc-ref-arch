@@ -29,10 +29,13 @@ masterID=`oci compute instance launch --region $region --availability-domain "$A
 #CREATE COMPUTE
 echo
 echo 'Creating Compute Nodes'
-computeData=$(for i in `seq 1 $CNODES`; do oci compute instance launch --region $region --availability-domain "$AD" -c $C --shape "BM.Standard2.52" --display-name "hpc_cn$i-$PRE" --image-id $OS --subnet-id $S --assign-public-ip false  --skip-source-dest-check true --user-data-file hn_configure.sh --ssh-authorized-keys-file ~/.ssh/id_rsa.pub; done)
+computeData=$(for i in `seq 1 $CNODES`; do oci compute instance launch --region $region --availability-domain "$AD" -c $C --shape "BM.Standard2.52" --display-name "hpc_cn$i-$PRE" --image-id $OS --subnet-id $S --assign-public-ip true  --user-data-file hn_configure.sh --ssh-authorized-keys-file ~/.ssh/id_rsa.pub; done)
+
+#--skip-source-dest-check true 
 
 #LIST IP's
 echo
+echo 'Created Head Node and Compute Nodes'
 echo 'Waiting five minutes for IP addresses'
 sleep 300
 
@@ -43,7 +46,7 @@ for iid in `oci compute instance list --region $region -c $C | jq -r '.data[] | 
 scp -o StrictHostKeyChecking=no ~/.ssh/id_rsa opc@$masterIP:~/.ssh/
 
 #CREATE REMOVE SCRIPT
-cat << EOF >> removeCluster_$PRE.sh
+cat << EOF >> removeCluster-$PRE.sh
 #!/bin/bash
 export C=$1
 export PRE=$PRE
@@ -54,15 +57,17 @@ export NG=$NG
 export RT=$RT
 export SL=$SL
 export S=$S
+export masterID=$masterID
 
 #DELETE INSTANCES
-oci compute instance terminate --region $region --instance-id hpc_master-$PRE --force
+oci compute instance terminate --region $region --instance-id $masterID --force
 for instanceid in $(oci compute instance list --region $region -c $C | jq -r '.data[] | select(."display-name" | contains ("$PRE")) | .id'); do oci compute instance terminate --region $region --instance-id $instanceid --force; done
 sleep 30
 oci network subnet delete --region $region --subnet-id $S --force
+sleep 30
 oci network route-table delete --region $region --rt-id $RT --force
 oci network security-list delete --region $region --security-list-id $SL --force
 oci network vcn delete --region $region --vcn-id $V --force
 EOF
 
-chmod +x removeCluster.sh
+chmod +x removeCluster-$PRE.sh
