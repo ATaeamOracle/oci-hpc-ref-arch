@@ -46,7 +46,7 @@ for iid in `oci compute instance list --region $region -c $C | jq -r '.data[] | 
 scp -o StrictHostKeyChecking=no ~/.ssh/id_rsa opc@$masterIP:~/.ssh/
 
 #CREATE REMOVE SCRIPT
-cat << EOF >> removeCluster-$PRE.sh
+cat << "EOF" >> removeCluster-$PRE.sh
 #!/bin/bash
 export C=$1
 export PRE=$PRE

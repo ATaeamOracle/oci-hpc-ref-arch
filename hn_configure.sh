@@ -20,7 +20,7 @@ yum group install -y -q "Development Tools"
 IP=`hostname -i`
 localip=`echo $IP | cut --delimiter='.' -f -3`
 myhost=`hostname`
-nmap -A -p 80 $localip.0/28 | grep $localip | awk '{ print $5 }'> /home/$MYUSER/hostfile
+nmap -p 80 $localip.0/28 | grep $localip | awk '{ print $5 }'> /home/$MYUSER/hostfile
 sed '/10.0.0.1/d' /home/$MYUSER/hostfile -i
 
 cat << EOF >> /etc/security/limits.conf
@@ -35,7 +35,7 @@ EOF
 cd ~
 git clone https://github.com/oci-hpc/oci-hpc-ref-arch
 source oci-hpc-ref-arch/disable_ht.sh 0
-#source oci-hpc-ref-arch/install_ganglia.sh $MYHOST OCI 8649
+source oci-hpc-ref-arch/install_ganglia.sh $MYHOST OCI 8649
 source oci-hpc-ref-arch/nfs_setup.sh $MYHOST
 chown $MYUSER:$MYUSER /mnt/share/scratch
 
@@ -85,7 +85,7 @@ sed -i 's/: / /g' /etc/hosts
 
 runuser -l $MYUSER -c 'for ip in `cat /home/opc/hostfile`; do scp /etc/hosts $ip:~; done'
 runuser -l $MYUSER -c 'for ip in `cat /home/opc/hostfile`; do ssh opc@$ip sudo mv ~/hosts /etc/hosts; done'
-touch /home/$MYUSER/CONFIG_COMPLETE
+touch /var/log/CONFIG_COMPLETE
 
 
 :'
