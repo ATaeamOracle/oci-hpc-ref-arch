@@ -47,7 +47,7 @@ cat << EOF >> /home/$MYUSER/.bashrc
 export WCOLL=/home/$MYUSER/hostfile
 export PATH=/opt/intel/compilers_and_libraries_2018.1.163/linux/mpi/intel64/bin:$PATH
 export I_MPI_ROOT=/opt/intel/compilers_and_libraries_2018.1.163/linux/mpi
-export MPI_ROOT=$I_MPI_ROOT
+export MPI_ROOT=/opt/intel/compilers_and_libraries_2018.1.163/linux/mpi
 EOF
 
 cat << EOF > /home/$MYUSER/.ssh/config
