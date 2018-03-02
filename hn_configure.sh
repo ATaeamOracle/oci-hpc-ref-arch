@@ -35,7 +35,7 @@ EOF
 cd ~
 git clone https://github.com/oci-hpc/oci-hpc-ref-arch
 source oci-hpc-ref-arch/disable_ht.sh 0
-source oci-hpc-ref-arch/install_ganglia.sh $MYHOST OCI 8649
+#source oci-hpc-ref-arch/install_ganglia.sh $MYHOST OCI 8649
 source oci-hpc-ref-arch/nfs_setup.sh $MYHOST
 chown $MYUSER:$MYUSER /mnt/share/scratch
 

@@ -62,10 +62,11 @@ export masterID=$masterID
 
 #DELETE INSTANCES
 oci compute instance terminate --region $region --instance-id $masterID --force
+for instanceid in $(oci compute instance list --region $region -c $C | jq -r '.data[] | select(."display-name" | contains ("'$PRE'")) | .id'); do oci compute instance terminate --region $region --instance-id $instanceid --force; done
+
 EOF
 cat << "EOF" >> removeCluster-$PRE.sh
 
-for instanceid in $(oci compute instance list --region $region -c $C | jq -r '.data[] | select(."display-name" | contains ("$PRE")) | .id'); do oci compute instance terminate --region $region --instance-id $instanceid --force; done
 sleep 30
 oci network subnet delete --region $region --subnet-id $S --force
 sleep 30
