@@ -2,6 +2,7 @@
 
 # PARM: 1="0" turn off hyper threading, "1" turn it on.
 
+yum install -y -q stress
 
 if [[ $# -ne 1 ]]; then
     echo 'One argument required. 0 to turn off hyper-threading or'

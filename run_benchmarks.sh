@@ -23,6 +23,16 @@ cd /mnt/share/scratch/benchmark/MPI_testsuite
 wget https://objectstorage.us-phoenix-1.oraclecloud.com/p/ByfEf27rYjwnR4AtE70xbgsZ7KWmn91vIr9RWvCruqQ/n/hpc/b/HPC_BENCHMARKS/o/MPI_testsuite.tgz -O - | tar zx
 '
 
+#MEMORY BANDWIDTH BENCHMARK
+cd /mnt/share/scratch
+wget http://zsmith.co/archives/bandwidth-1.5.1.tar.gz
+tar -xzvf bandwidth-1.5.1.tar.gz
+cd bandwidth-1.5.1
+sudo yum install -y nasm gcc 
+sudo touch /usr/include/stropts.h
+make bandwidth64
+./bandwidth64
+
 #HPCG
 mkdir -p /mnt/share/scratch/benchmark/hpcg
 cd /mnt/share/scratch/benchmark/hpcg
