@@ -61,17 +61,23 @@ export masterID=$masterID
 
 
 #DELETE INSTANCES
+echo Removing Head Node
 oci compute instance terminate --region $region --instance-id $masterID --force
 
 EOF
 cat << "EOF" >> removeCluster-$PRE.sh
+echo Removing Compute Nodes
 for instanceid in $(oci compute instance list --region $region -c $C | jq -r '.data[] | select(."display-name" | contains ("'$PRE'")) | .id'); do oci compute instance terminate --region $region --instance-id $instanceid --force; done
 sleep 30
+echo Removing Subnet, Route Table, Security List, and VCN
 oci network subnet delete --region $region --subnet-id $S --force
-sleep 30
+sleep 10
 oci network route-table delete --region $region --rt-id $RT --force
-sleep 30
+sleep 10
 oci network security-list delete --region $region --security-list-id $SL --force
+sleep 10
+oci network internet-gateway delete --region $region --ig-id $NG --force
+sleep 10
 oci network vcn delete --region $region --vcn-id $V --force
 EOF
 
