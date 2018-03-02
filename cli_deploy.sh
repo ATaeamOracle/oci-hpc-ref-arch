@@ -58,12 +58,13 @@ export RT=$RT
 export SL=$SL
 export S=$S
 export masterID=$masterID
-EOF
+
 
 #DELETE INSTANCES
 oci compute instance terminate --region $region --instance-id $masterID --force
-
+EOF
 cat << "EOF" >> removeCluster-$PRE.sh
+
 for instanceid in $(oci compute instance list --region $region -c $C | jq -r '.data[] | select(."display-name" | contains ("$PRE")) | .id'); do oci compute instance terminate --region $region --instance-id $instanceid --force; done
 sleep 30
 oci network subnet delete --region $region --subnet-id $S --force
