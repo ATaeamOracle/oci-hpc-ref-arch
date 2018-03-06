@@ -17,6 +17,7 @@ yum install -y -q gcc libffi-devel python-devel openssl-devel
 #yum group install -y -q "X Window System"
 yum group install -y -q "Development Tools"
 
+
 IP=`hostname -i`
 localip=`echo $IP | cut --delimiter='.' -f -3`
 myhost=`hostname`
