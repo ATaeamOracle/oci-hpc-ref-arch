@@ -48,6 +48,7 @@ scp -o StrictHostKeyChecking=no ~/.ssh/id_rsa opc@$masterIP:~/.ssh/
 #CREATE REMOVE SCRIPT
 cat << EOF >> removeCluster-$PRE.sh
 #!/bin/bash
+export masterIP=$masterIP
 export C=$1
 export PRE=$PRE
 export region=$region
@@ -79,7 +80,7 @@ sleep 10
 oci network internet-gateway delete --region $region --ig-id $NG --force
 sleep 10
 oci network vcn delete --region $region --vcn-id $V --force
-Echo Complete
+echo Complete
 EOF
 
 chmod +x removeCluster-$PRE.sh

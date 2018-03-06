@@ -22,7 +22,8 @@ CLUSTER_PORT=$3
 #
 is_mgmt()
 {
-    hostname -i | grep "$MGMT_HOSTNAME"
+	echo `hostname`
+    hostname | grep "$MGMT_HOSTNAME"
     return $?
 }
 
