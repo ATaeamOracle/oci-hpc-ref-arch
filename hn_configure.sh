@@ -2,6 +2,7 @@
 MYUSER=opc
 MYHOST=10.0.0.2
 
+
 sudo systemctl stop firewalld
 sudo systemctl disable firewalld
 

@@ -58,11 +58,10 @@ install_ganglia_gmetad()
 	chown root:root -R /var/lib/ganglia/rrds/
 	
 	systemctl restart httpd
-	systemctl restart gmetad
+	systemctl restart gmetad &
 
 	systemctl enable httpd
-	systemctl enable gmetad	
-
+	systemctl enable gmetad	&
 }
 
 install_gmond()
@@ -90,8 +89,8 @@ install_gmond()
 	#name=`hostname`
 	#sed -i 's/# override_hostname = "mywebserver.domain.com".*/override_hostname ="'${name,,}'"/g' $GMOND_CONFIG
 
-	systemctl restart gmond
-	systemctl enable gmond
+	systemctl restart gmond &
+	systemctl enable gmond &
 }
 
 SETUP_MARKER=/var/tmp/install_ganglia.marker

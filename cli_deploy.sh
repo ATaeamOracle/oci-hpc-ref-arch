@@ -3,14 +3,17 @@
 export CNODES=4
 export C=$1
 export PRE=`uuidgen | cut -c-5`
-export region=us-ashburn-1
-export AD=kWVD:US-ASHBURN-AD-1
-export OS=ocid1.image.oc1.phx.aaaaaaaav4gjc4l232wx5g5drypbuiu375lemgdgnc7zg2wrdfmmtbtyrc5q #OracleLinux
-export OS=ocid1.image.oc1.iad.aaaaaaaautkmgjebjmwym5i6lvlpqfzlzagvg5szedggdrbp6rcjcso3e4kq
+#export region=us-ashburn-1
+export region=eu-frankfurt-3
+#export AD=kWVD:US-ASHBURN-AD-1
+export AD=kWVD:EU-FRANKFURT-1-AD-3
+#export OS=ocid1.image.oc1.phx.aaaaaaaav4gjc4l232wx5g5drypbuiu375lemgdgnc7zg2wrdfmmtbtyrc5q #OracleLinux, PHX
+#export OS=ocid1.image.oc1.iad.aaaaaaaautkmgjebjmwym5i6lvlpqfzlzagvg5szedggdrbp6rcjcso3e4kq #OracleLinux, IAD
+export OS=ocid1.image.oc1.eu-frankfurt-1.aaaaaaaamueig267buvha27g2zr7hqthtix55dnsc3yizwj62yxxjg4lwtka #OracleLinux, FRA
 #wget https://raw.githubusercontent.com/tanewill/oci_hpc/master/bm_configure.sh
 
 #LIST OS OCID's
-#oci compute image list -c $C --output table --query "data [*].{ImageName:\"display-name\", OCID:id}"
+#oci compute image list -c $C --output table --region $region --query "data [*].{ImageName:\"display-name\", OCID:id}"
 
 #CREATE NETWORK
 echo
